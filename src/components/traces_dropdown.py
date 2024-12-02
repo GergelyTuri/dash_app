@@ -1,10 +1,11 @@
+import pandas as pd
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
 from . import trace_ids
 
 
-def render(app: Dash) -> html.Div:
+def render(app: Dash, data: pd.DataFrame) -> html.Div:
     trace_types = ["raw_405nm", "raw_465nm", "dff"]
 
     @app.callback(

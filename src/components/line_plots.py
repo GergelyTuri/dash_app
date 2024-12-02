@@ -1,13 +1,15 @@
+import pandas as pd
 import plotly.express as px
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
-from . import load_data, trace_ids
+from ..data import load_data
+from . import trace_ids
 
-DATA = load_data.load_data()
+# DATA = load_data.load_data()
 
 
-def render(app: Dash) -> html.Div:
+def render(app: Dash, data: pd.DataFrame) -> html.Div:
     @app.callback(
         Output(trace_ids.LINE_PLOT, "children"),
         [
@@ -20,7 +22,7 @@ def render(app: Dash) -> html.Div:
             return html.Div("No data selected", id=trace_ids.LINE_PLOT)
 
         # Validate selected trace types against the columns in DATA
-        valid_columns = [col for col in selected_trace_types if col in DATA.columns]
+        valid_columns = [col for col in selected_trace_types if col in data.columns]
 
         # Handle case where no valid trace types match
         if not valid_columns:
@@ -28,7 +30,7 @@ def render(app: Dash) -> html.Div:
 
         # Create the line plot
         fig = px.line(
-            DATA,
+            data,
             y=valid_columns,
             labels={"value": "Trace Values", "variable": "Trace Types"},
         )
